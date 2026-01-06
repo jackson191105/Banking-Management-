@@ -1,53 +1,106 @@
-// Initialize balance and transaction list
-let balance = localStorage.getItem("balance") || 0;
-let transactions = JSON.parse(localStorage.getItem("transactions")) || [];
+// Login
+function login() {
+  let user = document.getElementById("username").value;
+  if (!user) return alert("Enter username");
 
-const balanceEl = document.getElementById("balance");
-const transactionList = document.getElementById("transactionList");
+  localStorage.setItem("user", user);
 
-balanceEl.innerText = balance;
+  if (!localStorage.getItem(user)) {
+    localStorage.setItem(user, JSON.stringify({
+      savings: 0,
+      current: 0,
+      transactions: []
+    }));
+  }
 
-// Function to update transaction list in UI
-function updateTransactions() {
-  transactionList.innerHTML = "";
-  transactions.forEach(tx => {
-    const li = document.createElement("li");
-    li.innerText = tx;
-    transactionList.appendChild(li);
+  window.location = "dashboard.html";
+}
+
+// Load dashboard
+if (document.getElementById("user")) {
+  let user = localStorage.getItem("user");
+  if (!user) window.location = "index.html";
+
+  document.getElementById("user").innerText = user;
+  updateUI();
+}
+
+function getData() {
+  let user = localStorage.getItem("user");
+  return JSON.parse(localStorage.getItem(user));
+}
+
+function saveData(data) {
+  let user = localStorage.getItem("user");
+  localStorage.setItem(user, JSON.stringify(data));
+  updateUI();
+}
+
+function updateUI() {
+  let data = getData();
+  document.getElementById("savings").innerText = data.savings;
+  document.getElementById("current").innerText = data.current;
+
+  let list = document.getElementById("transactions");
+  list.innerHTML = "";
+  data.transactions.forEach(t => {
+    let li = document.createElement("li");
+    li.innerText = t;
+    list.appendChild(li);
   });
 }
 
-// Deposit function
-document.getElementById("depositBtn").addEventListener("click", () => {
-  const amt = parseFloat(document.getElementById("amount").value);
-  if (amt > 0) {
-    balance = parseFloat(balance) + amt;
-    transactions.push(`Deposited $${amt}`);
-    saveData();
-  } else {
-    alert("Enter a valid amount");
-  }
-});
+// Deposit
+function deposit() {
+  let amt = Number(amount.value);
+  let acc = accountType.value;
+  if (amt <= 0) return alert("Invalid amount");
 
-// Withdraw function
-document.getElementById("withdrawBtn").addEventListener("click", () => {
-  const amt = parseFloat(document.getElementById("amount").value);
-  if (amt > 0 && amt <= balance) {
-    balance = parseFloat(balance) - amt;
-    transactions.push(`Withdrew $${amt}`);
-    saveData();
-  } else {
-    alert("Insufficient balance or invalid amount");
-  }
-});
-
-// Save data to localStorage and update UI
-function saveData() {
-  localStorage.setItem("balance", balance);
-  localStorage.setItem("transactions", JSON.stringify(transactions));
-  balanceEl.innerText = balance;
-  updateTransactions();
+  let data = getData();
+  data[acc] += amt;
+  data.transactions.push(`Deposited ₹${amt} to ${acc}`);
+  saveData(data);
 }
 
-// Initialize transaction list on page load
-updateTransactions();
+// Withdraw
+function withdraw() {
+  let amt = Number(amount.value);
+  let acc = accountType.value;
+
+  let data = getData();
+  if (amt <= 0 || amt > data[acc]) return alert("Insufficient balance");
+
+  data[acc] -= amt;
+  data.transactions.push(`Withdrew ₹${amt} from ${acc}`);
+  saveData(data);
+}
+
+// Transfer
+function transfer() {
+  let amt = Number(amount.value);
+  let from = accountType.value;
+  let to = from === "savings" ? "current" : "savings";
+
+  let data = getData();
+  if (amt <= 0 || amt > data[from]) return alert("Transfer failed");
+
+  data[from] -= amt;
+  data[to] += amt;
+  data.transactions.push(`Transferred ₹${amt} from ${from} to ${to}`);
+  saveData(data);
+}
+
+// Reset
+function resetAccount() {
+  let user = localStorage.getItem("user");
+  if (confirm("Reset all data?")) {
+    localStorage.removeItem(user);
+    logout();
+  }
+}
+
+// Logout
+function logout() {
+  localStorage.removeItem("user");
+  window.location = "index.html";
+}
