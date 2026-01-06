@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+  <h2>Welcome, <span id="user"></span></h2>
+
+  <div class="card">
+    <p>Savings Balance: ₹<span id="savings">0</span></p>
+    <p>Current Balance: ₹<span id="current">0</span></p>
+  </div>
+
+  <select id="accountType">
+    <option value="savings">Savings</option>
+    <option value="current">Current</option>
+  </select>
+
+  <input type="number" id="amount" placeholder="Amount">
+
+  <button onclick="deposit()">Deposit</button>
+  <button onclick="withdraw()">Withdraw</button>
+  <button onclick="transfer()">Transfer</button>
+  <button class="danger" onclick="resetAccount()">Reset</button>
+  <button onclick="logout()">Logout</button>
+
+  <h3>Transactions</h3>
+  <ul id="transactions"></ul>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
