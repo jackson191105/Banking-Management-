@@ -1,31 +1,18 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
+  <title>Bank Login</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Banking Management</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="container">
-    <h1>Banking Management</h1>
 
-    <div class="balance-container">
-      <p>Balance: $<span id="balance">0</span></p>
-    </div>
+<div class="container">
+  <h2>Bank Login</h2>
+  <input id="username" placeholder="Enter username">
+  <button onclick="login()">Login</button>
+</div>
 
-    <div class="form-container">
-      <input type="number" id="amount" placeholder="Enter amount">
-      <button id="depositBtn">Deposit</button>
-      <button id="withdrawBtn">Withdraw</button>
-    </div>
-
-    <div class="transactions">
-      <h3>Transactions:</h3>
-      <ul id="transactionList"></ul>
-    </div>
-  </div>
-
-  <script src="script.js"></script>
+<script src="script.js"></script>
 </body>
 </html>
